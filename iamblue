@@ -1,0 +1,19 @@
+#!/bin/bash
+
+MAC_ADRESS=08-C8-C2-12-03-AF
+PAIRED_HEADPHONES=$(bluetoothctl devices | grep $MAC_ADRESS | cut -d " " -f 2)
+
+if [ -z $PAIRED_HEADPHONES ]; then
+	echo "Headphones not paired, starting pairing..."
+	bluetoothctl scan on > /dev/null 2>&1 & sleep 10
+	while [ -z $(bluetoothctl devices | grep $MAC_ADRESS | cut -d " " -f 2) ]
+	do
+		echo "Searching..."
+	done
+	kill $(ps -a | grep bluetoothctl | tr -s " " | cut -d " " -f 2)
+	echo "YOUR RESULT IS :"
+	echo $(bluetoothctl devices | grep $MAC_ADRESS | cut -d " " -f 2)
+	#echo -e "$MAC_ADRESS\n" | blueoothctl
+else
+	echo "Headphones already paired, now connecting..."
+fi
