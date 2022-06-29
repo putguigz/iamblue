@@ -1,21 +1,36 @@
 #!/bin/bash
 
-MAC_ADRESS=08:C8:C2:12:03:AF
-PAIRED_HEADPHONES=$(bluetoothctl paired-devices | grep $MAC_ADRESS | cut -d " " -f 2)
+MAC_ADDRESS=unset
+#PAIRED_HEADPHONES=$(bluetoothctl paired-devices | grep $MAC_ADDRESS | cut -d " " -f 2)
+
+if [ $MAC_ADDRESS = "unset" ]; then
+	if [ "$1" = "disco" ];then
+		echo "Please, add the MAC address of your device for first run, as such : ./iamblue <your_device_mac_address>"
+		exit
+	elif [ -n "$1" ] ;then
+		echo "PROUT"
+		sed -i "" "s/MAC_ADDRESS=unset/MAC_ADDRESS=$1/" iamblue
+	else
+		echo "Please, add the MAC address of your device for first run, as such : ./iamblue <your_device_mac_address>"
+		exit
+	fi
+fi
+
+##GET RID OF THAT IF IT WORKS
+exit
 
 if [ -z $PAIRED_HEADPHONES ]; then
 	echo "Headphones not paired, starting pairing..."
 	bluetoothctl scan on > /dev/null 2>&1 &
-	
 	while [ -z $(bluetoothctl devices | grep $MAC_ADRESS | cut -d " " -f 2) ]
 	do
 		echo "Searching..."
 	done
 	kill $(ps -a | grep bluetoothctl | tr -s " " | cut -d " " -f 2)
-	echo -e "pair $MAC_ADRESS\n" | bluetoothctl
+	echo -e "pair $MAC_ADDRESS\n" | bluetoothctl
 else
 	echo "Headphones already paired, now connecting..."
 fi
 
-echo -e "connect $MAC_ADRESS\n" | bluetoothctl
+echo -e "connect $MAC_ADDRESS\n" | bluetoothctl
 
