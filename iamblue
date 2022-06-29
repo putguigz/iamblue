@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Change MAC_ADDRESS to MAC_ADDRESS=unset and relaunch the script to change device's MAC_ADDRESS
-MAC_ADDRESS=unset
+MAC_ADDRESS=08:C8:C2:12:03:AF
 
 if [ $MAC_ADDRESS = "unset" ]; then
 	if [ "$1" = "disco" ] || [ -z "$1" ];then
@@ -29,9 +29,15 @@ PAIRED_HEADPHONES=$(bluetoothctl -- paired-devices | grep $MAC_ADDRESS | cut -d 
 if [ -z "$PAIRED_HEADPHONES" ]; then
 	echo "Headphones not paired, starting pairing..."
 	bluetoothctl -- scan on > /dev/null 2>&1 &
+	START_TIME=$(date +%s)
 	while [ -z "$(bluetoothctl -- devices | grep $MAC_ADDRESS | cut -d ' ' -f 2)" ]
 	do
 		echo -e -n "Searching...\r"
+		NOW_TIME=$(date +%s)
+		if [ $(NOW_TIME - START_TIME) -eq 30 ]; then
+			echo "Couldn't find your device's MAC address. Exiting..."
+			exit 
+		fi
 	done
 	kill $(ps -a | grep bluetoothctl | tr -s " " | cut -d " " -f 2)
 	bluetoothctl -- pair $MAC_ADDRESS
