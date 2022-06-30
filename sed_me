@@ -3,5 +3,5 @@
 ma_var=unset
 
 if [ $ma_var = "unset" ]; then
-	sed -i "" "s/ma_var=unset/ma_var=set/" sed_me
+	sed "3s/ma_var=unset/ma_var=set/" sed_me
 fi
