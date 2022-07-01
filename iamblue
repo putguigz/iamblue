@@ -34,7 +34,7 @@ if [ -z "$PAIRED_HEADPHONES" ]; then
 	do
 		echo -e -n "Searching...\r"
 		NOW_TIME=$(date +%s)
-		if [ $(NOW_TIME - START_TIME) -eq 30 ]; then
+		if [ $((NOW_TIME - START_TIME)) -eq 30 ]; then
 			echo "Couldn't find your device's MAC address. Exiting..."
 			exit 
 		fi
