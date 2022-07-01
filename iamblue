@@ -1,8 +1,7 @@
 #!/bin/bash
 
 #Change MAC_ADDRESS to MAC_ADDRESS=unset and relaunch the script to change device's MAC_ADDRESS
-MAC_ADDRESS=08:C8:C2:12:03:AF
-
+MAC_ADDRESS=unset
 if [ $MAC_ADDRESS = "unset" ]; then
 	if [ "$1" = "disco" ] || [ -z "$1" ];then
 		echo "Please, add the MAC address of your device for first run, as such : ./iamblue <your_device_mac_address>"
