@@ -13,7 +13,18 @@ if [ $MAC_ADDRESS = "unset" ]; then
 	fi
 fi
 
-if [ -z $PAIRED_HEADPHONES ]; then
+if [ "$1" = "disco" ]; then
+	bluetoothctl -- disconnect $MAC_ADDRESS
+	exit
+fi
+
+if [ "$1" = "unpair" ]; then
+	bluetoothctl -- disconnect $MAC_ADDRESS
+	bluetoothctl -- remove $MAC_ADDRESS
+	exit
+fi 
+
+if [ -z "$PAIRED_HEADPHONES" ]; then
 	echo "Headphones not paired, starting pairing..."
 	bluetoothctl -- scan on > /dev/null 2>&1 &
 	while [ -z "$(bluetoothctl -- devices | grep "$MAC_ADRESS" | cut -d " " -f 2)" ]
