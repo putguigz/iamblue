@@ -2,7 +2,6 @@
 
 #Change MAC_ADDRESS to MAC_ADDRESS=unset and relaunch the script to change device's MAC_ADDRESS
 MAC_ADDRESS=unset
-PAIRED_HEADPHONES=$(bluetoothctl -- paired-devices | grep "$MAC_ADDRESS" | cut -d " " -f 2)
 
 if [ $MAC_ADDRESS = "unset" ]; then
 	if [ "$1" = "disco" ] || [ -z "$1" ];then
@@ -24,12 +23,15 @@ if [ "$1" = "unpair" ]; then
 	exit
 fi 
 
+
+PAIRED_HEADPHONES=$(bluetoothctl -- paired-devices | grep $MAC_ADDRESS | cut -d " " -f 2)
+
 if [ -z "$PAIRED_HEADPHONES" ]; then
 	echo "Headphones not paired, starting pairing..."
 	bluetoothctl -- scan on > /dev/null 2>&1 &
-	while [ -z "$(bluetoothctl -- devices | grep "$MAC_ADRESS" | cut -d " " -f 2)" ]
+	while [ -z "$(bluetoothctl -- devices | grep $MAC_ADDRESS | cut -d ' ' -f 2)" ]
 	do
-		echo "Searching..."
+		echo -e -n "Searching...\r"
 	done
 	kill $(ps -a | grep bluetoothctl | tr -s " " | cut -d " " -f 2)
 	bluetoothctl -- pair $MAC_ADDRESS
